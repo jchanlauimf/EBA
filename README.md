@@ -7,3 +7,6 @@ EBA stress test data
   
 - rppA
   - Residential property price data, annual 
+
+- prgGetECBData.R
+  - R script to download  data from the ECB statistical data warehouse
