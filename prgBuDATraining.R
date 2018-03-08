@@ -22,7 +22,15 @@ library(readxl)
 # Macro financial data stored in EBA Data.xlsx
 
 filename = "EBA Data.xlsx"
-sheets = c('GDP', "UEMP", "CPI", "LTRate","Other")
+
+data_in_levels = FALSE
+
+if (data_in_levels) {
+  sheets = c('GDP',"UEMP","CPI","LTRate","Other")  
+} else {
+  sheets = c("GDP_g","UEMP_g","CPI_g","LTRate","Other")
+}
+
 
 for (this_sheet in sheets){
   sheet_name = paste("Data_", this_sheet, sep="")
@@ -92,10 +100,15 @@ nctry = length(ctry_codes)
 
 # get header from generic file and modify 
 
-header_from_file = "User_macro_9.csv"
+header_from_file = "User_macro_header.csv"
 header_csv = readLines(header_from_file, n=13)
 header_csv[8]="Frequency, ,0,1,1,1,1,1,-1"
-header_csv[12]="Macro Type, ,-1,-1,-1,-1,-1,-1,-1"
+
+if (data_in_levels) {
+  header_csv[12]="Macro Type, ,-1,-1,-1,-1,-1,-1,-1"
+} else {
+  header_csv[12]="Macro Type, ,1,0,1,-1,-1,-1,-1"
+}
 
 # Create directory for trainin gfiles
 train_dir = "Training"
@@ -110,13 +123,20 @@ if (file.exists(train_dir)){
 
 for (ctry in ctry_names){
   # Select variables, using annual residential property prices
-  year  = select(df_GDP, Year)
-  month = select(df_GDP, Month)
-  GDP   = select(df_GDP, ctry)
-  UEMP  = select(df_UEMP, ctry)
-  CPI   = select(df_CPI, ctry)
+  year  = select(df_LTRate, Year)
+  month = select(df_LTRate, Month)
   LTRate= select(df_LTRate, ctry)
   RPP   = select(df_RPPa, ctry)
+  
+  if (data_in_levels){
+    GDP   = select(df_GDP, ctry)
+    UEMP  = select(df_UEMP, ctry)
+    CPI   = select(df_CPI, ctry)
+  } else {
+    GDP   = select(df_GDP_g, ctry)
+    UEMP  = select(df_UEMP_g, ctry)
+    CPI   = select(df_CPI_g, ctry)
+  }
   
   the_df= data.frame(year, month, GDP, UEMP, CPI, LTRate, select(df_Other, EURUSD, WTI), RPP)
   colnames(the_df) = c("year", "month", "GDP", "UEMP", "CPI", "LTRate", "EURUSD", "WTI", "RPP")
