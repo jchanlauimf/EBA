@@ -107,7 +107,7 @@ header_csv[8]="Frequency, ,0,1,1,1,1,1,-1"
 if (data_in_levels) {
   header_csv[12]="Macro Type, ,-1,-1,-1,-1,-1,-1,-1"
 } else {
-  header_csv[12]="Macro Type, ,1,0,1,-1,-1,-1,-1"
+  header_csv[12]="Macro Type, ,1,0,1,0,1,1,1"
 }
 
 # Create directory for trainin gfiles
@@ -121,24 +121,34 @@ if (file.exists(train_dir)){
   setwd(file.path(main_dir,train_dir))
 }
 
+
 for (ctry in ctry_names){
   # Select variables, using annual residential property prices
-  year  = select(df_LTRate, Year)
-  month = select(df_LTRate, Month)
-  LTRate= select(df_LTRate, ctry)
-  RPP   = select(df_RPPa, ctry)
   
   if (data_in_levels){
+    year  = select(df_LTRate, Year)
+    month = select(df_LTRate, Month)
+    LTRate= select(df_LTRate, ctry)
+    RPP   = select(df_RPPa, ctry)
     GDP   = select(df_GDP, ctry)
     UEMP  = select(df_UEMP, ctry)
     CPI   = select(df_CPI, ctry)
+    EURUSD= df_Other$EURUSD
+    WTI   = df_Other$WTI
   } else {
+    year  = select(df_LTRate_g, Year)
+    month = select(df_LTRate_g, Month)
+    LTRate= select(df_LTRate_g, ctry)
+    RPP   = select(df_RPPa, ctry)
     GDP   = select(df_GDP_g, ctry)
     UEMP  = select(df_UEMP_g, ctry)
     CPI   = select(df_CPI_g, ctry)
+    EURUSD= df_Other_g$EURUSD
+    WTI   = df_Other_g$WTI
+    
   }
   
-  the_df= data.frame(year, month, GDP, UEMP, CPI, LTRate, select(df_Other, EURUSD, WTI), RPP)
+  the_df= data.frame(year, month, GDP, UEMP, CPI, LTRate, EURUSD, WTI, RPP)
   colnames(the_df) = c("year", "month", "GDP", "UEMP", "CPI", "LTRate", "EURUSD", "WTI", "RPP")
   idx = which(ctry_names == ctry)  # index to select ctry_codes
   df_name = paste(name_prefix,ctry_codes[idx],sep="")

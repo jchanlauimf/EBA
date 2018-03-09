@@ -206,7 +206,7 @@ for (ctry in ctry_names){
   code= ctry_codes[idx]
   header[1] = ctry
   filename = paste(test_dir,"macro_",code,"_test.xlsx",sep="")
-  filename = gsub(" ","",filename)
+  #filename = gsub(" ","",filename)
   wb = createWorkbook(type="xlsx")
 
   Test1 = createSheet(wb, sheetName="Test 1") 
@@ -257,7 +257,7 @@ other_header= c(
 )
 
 
-indicator = c(1,1)  # place in row 7, column 3, first Test
+indicator = array(c(1,1), dim=c(1,2))  # place in row 7, column 3, first Test
 
 year = c(rep('2017',4), rep('2018',12), rep('2019',12), rep('2020',12))
 month = c(c(9,10,11,12), rep(seq(1,12,1),3))
@@ -316,11 +316,6 @@ for (ctry in ctry_names){
   
   saveWorkbook(wb, filename)  
 }
-
-
-## Interest rates - same for all
-
-
 
 #----
 
