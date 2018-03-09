@@ -205,7 +205,7 @@ for (ctry in ctry_names){
   idx = which(ctry_names == ctry)
   code= ctry_codes[idx]
   header[1] = ctry
-  filename = paste(test_dir,"macro_",code,"_test.xlsx","")
+  filename = paste(test_dir,"macro_",code,"_test.xlsx",sep="")
   filename = gsub(" ","",filename)
   wb = createWorkbook(type="xlsx")
 
@@ -230,14 +230,95 @@ for (ctry in ctry_names){
   addDataFrame(scenario, Test2, startRow=10, startColumn=1, 
                row.names=FALSE)
   
-    saveWorkbook(wb, filename)
+  saveWorkbook(wb, filename)
 }
 
 # Stock and interest rates projections----
 
+if (!file.exists(internal_dir)){
+  dir.create(internal_dir)
+}
+
+header = c(
+'Austria',
+'Please use different sheets for multiple scenarios.',
+'Please FULLY fill the month-on-month (%, not annualized) Stock Index Return forecasts (if it is invovled).',
+'Interest Rate should be annualized (%).',
+'',
+'Please indicate whether involved as regressor: 1 for Yes, 0 for No. For example, if user wants involve only stock index return in regression, please fill 1 in C7 cell, 0 in D7 cell. User only need indicate in the first sheet.',
+'Involved'
+)
+
+other_header= c(
+'Austria',
+'Please use different sheets for multiple scenarios.',
+'Please FULLY fill the month-on-month (%, not annualized) Stock Index Return forecasts (if it is invovled).',
+'Interest Rate should be annualized (%).'
+)
+
+
+indicator = c(1,1)  # place in row 7, column 3, first Test
+
+year = c(rep('2017',4), rep('2018',12), rep('2019',12), rep('2020',12))
+month = c(c(9,10,11,12), rep(seq(1,12,1),3))
+
+## Find interest rate path, common for all economies
+
 swap_cur = as.numeric(SWAPS[8,3])
 swap_bse = as.numeric(strsplit(SWAPS[8,4]," ")[[1]]) 
 swap_adv = as.numeric(strsplit(SWAPS[8,6]," ")[[1]]) 
+
+swap = c(swap_cur, swap_bse)
+rate_path_bse = swap_cur + cumsum(unlist(lapply(diff(swap)/4, function(x) rep(x,4))))
+rate_path_bse = unlist(lapply(rate_path_bse, function(x) rep(x,3)))
+rate_path_bse = c(rep(swap_cur,4), rate_path_bse)
+
+swap = c(swap_cur, swap_adv)
+rate_path_adv = swap_cur + cumsum(unlist(lapply(diff(swap)/4, function(x) rep(x,4))))
+rate_path_adv = unlist(lapply(rate_path_adv, function(x) rep(x,3)))
+rate_path_adv = c(rep(swap_cur,4), rate_path_adv)
+
+for (ctry in ctry_names){
+  idx = which(ctry_names == ctry)
+  code= ctry_codes[idx]
+  header[1] = ctry
+  other_header[1] = ctry
+  filename = paste(internal_dir,"macro_",code,"_test.xlsx",sep="")
+  idx = which(STOCK[,1]==ctry)
+  stock = as.numeric(strsplit(STOCK[idx,2]," ")[[1]])
+  stock = c(100, 100+stock)
+  stock = 100*(stock/lag(stock))^(1/12)-100
+  stock = stock[2:end(stock)[1]]
+  stock = unlist(lapply(stock, function(x) rep(x,12)))
+  stock = c(rep(0,4), stock)
+  stock_bse = stock*0.0
+  stock_adv = stock
+  
+  df_base = data.frame(year,month,stock_bse,rate_path_bse)
+  colnames(df_base) = c("year","month","Stock Index","Interest Rate")
+  df_adv = data.frame(year,month,stock_adv,rate_path_adv)
+  colnames(df_adv) = c("year","month","Stock Index","Interest Rate")
+  
+  wb = createWorkbook(type="xlsx")
+  Test1 = createSheet(wb, sheetName="BuDA Test1") 
+  addDataFrame(header, Test1, startRow=1,startColumn=1,
+               row.names=FALSE, col.names=FALSE)
+  addDataFrame(indicator, Test1, startRow=7, startColumn=3,
+               row.names=FALSE, col.names=FALSE)
+  addDataFrame(df_base, Test1, startRow=9, startColumn=1, 
+               row.names=FALSE)
+  
+  Test2 = createSheet(wb, sheetName="BuDA Test2") 
+  addDataFrame(other_header, Test2, startRow=1,startColumn=1,
+               row.names=FALSE, col.names=FALSE)
+  addDataFrame(df_adv, Test2, startRow=6, startColumn=1, 
+               row.names=FALSE)
+  
+  saveWorkbook(wb, filename)  
+}
+
+
+## Interest rates - same for all
 
 
 
