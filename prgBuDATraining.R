@@ -28,7 +28,7 @@ data_in_levels = FALSE
 if (data_in_levels) {
   sheets = c('GDP',"UEMP","CPI","LTRate","Other")  
 } else {
-  sheets = c("GDP_g","UEMP_g","CPI_g","LTRate","Other")
+  sheets = c("GDP_g","UEMP_g","CPI_g","LTRate_g","Other_g")
 }
 
 

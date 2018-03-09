@@ -11,7 +11,7 @@
 # 2. Program will read the training scenarios to fill 2017Q4 data
 # 
 
-
+# Load libraries ----
 rm(list=ls())
 cat("\014")
 
@@ -19,9 +19,12 @@ library(tabulizer)  # use to read pdf tables
 library(xlsx)       # use to create testing files
 
 setwd("D:/Github Projects/EBA")
-table_dir = "./EBA Tables/"
 
-library(tabulizer)
+# internal directories
+
+table_dir = "./EBA Tables/"
+test_dir = "./Testing/"
+internal_dir = "./Internal Macros/"
 
 
 # Information about tables, variables, countries and ctry codes ----
@@ -177,6 +180,59 @@ for (ctry in ctry_names){
   
 }
 
+# Create user-based macro scenarios ----
+
+## header in Test sheets
+header= c(
+  'Austria',
+  '',
+  'This frequency provides the information whether the testing macro-economic scenarios used are reported on a quarterly basis or a yearly basis.',
+  'The value "0" means "Quarterly"; and the value "-1" means "Yearly".',
+  'If it is on a yearly basis, the projection data should be reported in Quarter 4 while blank need be reported in Quarter 1,2,3',
+  'Please keep the title of the macros same as in training file.',
+  'Please do not annualize the QoQ growth rates.', 
+  'Frequency'
+)
+
+# Frequency = annual
+freq_data = array(rep(-1,7), dim=c(1,7))
+
+if (!file.exists(test_dir)){
+  dir.create(test_dir)
+}
+
+for (ctry in ctry_names){
+  idx = which(ctry_names == ctry)
+  code= ctry_codes[idx]
+  header[1] = ctry
+  filename = paste(test_dir,"macro_",code,"_test.xlsx","")
+  filename = gsub(" ","",filename)
+  wb = createWorkbook(type="xlsx")
+
+  Test1 = createSheet(wb, sheetName="Test 1") 
+  addDataFrame(header, Test1, startRow=1,startColumn=1,
+               row.names=FALSE, col.names=FALSE)
+  addDataFrame(freq_data, Test1, startRow=8, startColumn=3,
+               row.names=FALSE, col.names=FALSE)
+  bse_name = paste("bse_",ctry,sep="")
+  scenario= get(bse_name)
+  addDataFrame(scenario, Test1, startRow=10, startColumn=1, 
+               row.names=FALSE)
+  
+  
+  Test2 = createSheet(wb, sheetName="Test 2")
+  addDataFrame(header, Test2, startRow=1,startColumn=1,
+               row.names=FALSE, col.names=FALSE)
+  addDataFrame(freq_data, Test2, startRow=8, startColumn=3,
+               row.names=FALSE, col.names=FALSE)
+  adv_name = paste("adv_",ctry,sep="")
+  scenario= get(adv_name)
+  addDataFrame(scenario, Test2, startRow=10, startColumn=1, 
+               row.names=FALSE)
+  
+    saveWorkbook(wb, filename)
+}
+
 # Stock and interest rates projections----
 
 swap_cur = as.numeric(SWAPS[8,3])
@@ -184,37 +240,7 @@ swap_bse = as.numeric(strsplit(SWAPS[8,4]," ")[[1]])
 swap_adv = as.numeric(strsplit(SWAPS[8,6]," ")[[1]]) 
 
 
-# Create workbooks
 
-header= c(
-'Austria',
-'',
-'This frequency provides the information whether the testing macro-economic scenarios used are reported on a quarterly basis or a yearly basis.',
-'The value "0" means "Quarterly"; and the value "-1" means "Yearly".',
-'If it is on a yearly basis, the projection data should be reported in Quarter 4 while blank need be reported in Quarter 1,2,3',
-'Please keep the title of the macros same as in training file.',
-'Please do not annualize the QoQ growth rates.', 
-'Frequency'
-)
-
-freq_data = array(rep(-1,7), dim=c(1,7))
-filename="trial.xlsx"
-wb = createWorkbook(type="xlsx")
-sheet = createSheet(wb,sheetName="Test1")
-addDataFrame(header, sheet, startRow=1, startColumn=1, 
-             row.names=FALSE, col.names=FALSE)
-addDataFrame(freq_data, sheet, startRow=8, startColumn=3,
-             row.names=FALSE, col.names=FALSE)
-addDataFrame(bse_Austria, sheet, startRow=10, startColumn=1, 
-             row.names=FALSE)
-
-saveWorkbook(wb, filename)
-
-
-
-
-
-
-
+#----
 
 
