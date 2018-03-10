@@ -25,6 +25,7 @@ setwd("D:/Github Projects/EBA")
 table_dir = "./EBA Tables/"
 test_dir = "./Testing/"
 internal_dir = "./Internal Macros/"
+train_dir= "./Training/"
 
 
 # Information about tables, variables, countries and ctry codes ----
@@ -150,6 +151,22 @@ for (ctry in ctry_names){
   wti[idx_ann] = c(0.0,0.0,0.0)
   rpp[idx_ann] = rpp_bse              
   
+  # Read the training user macro file to fill first row
+  idx_ctry = which(ctry_names==ctry)
+  ctry_num = ctry_codes[idx_ctry]
+  ctry_file = paste(train_dir,"User_macro_", ctry_num,".csv",sep="")
+  ctry_data = read.csv(ctry_file, skip=13)
+  nobs=dim(ctry_data)[1]
+  ctry_data = ctry_data[(nobs-2):nobs,]
+  initial_data = colSums(ctry_data[,3:dim(ctry_data)[2]], na.rm=T)
+  gdp[1] = initial_data[1]
+  emp[1] = initial_data[2]
+  cpi[1] = initial_data[3]
+  ltr[1] = initial_data[4]
+  eur[1] = initial_data[5]
+  wti[1] = initial_data[6]
+  rpp[1] = initial_data[7]
+
   df_base = data.frame(year,qtr, gdp, emp, cpi, ltr, eur, wti, rpp)
   colnames(df_base) = col_names
   
@@ -172,6 +189,14 @@ for (ctry in ctry_names){
   eur[idx_ann] = c(0.0,0.0,0.0)         # no change in EUR USD
   wti[idx_ann] = oil_adv
   rpp[idx_ann] = rpp_adv              
+  
+  gdp[1] = initial_data[1]
+  emp[1] = initial_data[2]
+  cpi[1] = initial_data[3]
+  ltr[1] = initial_data[4]
+  eur[1] = initial_data[5]
+  wti[1] = initial_data[6]
+  rpp[1] = initial_data[7]
   
   df_base = data.frame(year,qtr, gdp, emp, cpi, ltr, eur, wti, rpp)
   colnames(df_base) = col_names

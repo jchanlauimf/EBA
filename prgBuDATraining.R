@@ -42,14 +42,30 @@ for (this_sheet in sheets){
 
 # Residential property prices data, annual data
 
-filename = "rppA.xlsx"
-sheet = "data_RPP"
+#filename = "rppA.xlsx"
+#sheet = "data_RPP"
 
-df_RPPa = read_excel(filename,sheet)
+#df_RPPa = read_excel(filename,sheet)
 
-filename = "rppQ.xlsx"
-sheet = "data_RPPQ"
-df_RPPq = read_excel(filename,sheet)
+#filename = "rppQ.xlsx"
+#sheet = "data_RPPQ"
+#df_RPPq = read_excel(filename,sheet)
+
+filename = "rpp.xlsx"
+sheet = "Growth_m"
+df_RPP_g = read_excel(filename,sheet)
+colnames(df_RPP_g) = c("date", "Austria", "Belgium", "Germany", "Denmark",
+                       "Spain", "Finland", "France", "United Kingdom", "Greece",
+                       "Eurozone", "Ireland", "Italy", "Netherlands",
+                       "Portugal", "Sweden")
+
+sheet = "Level_m"
+df_RPP_l = read_excel(filename,sheet)
+colnames(df_RPP_l) = c("date", "Austria", "Belgium", "Germany", "Denmark",
+                       "Spain", "Finland", "France", "United Kingdom", "Greece",
+                       "Eurozone", "Ireland", "Italy", "Netherlands",
+                       "Portugal", "Sweden")
+
 
 # country codes for BuDA user-specified macro training files
 # number of countries = 14, excluding EU and Eurozone
@@ -129,7 +145,7 @@ for (ctry in ctry_names){
     year  = select(df_LTRate, Year)
     month = select(df_LTRate, Month)
     LTRate= select(df_LTRate, ctry)
-    RPP   = select(df_RPPa, ctry)
+    RPP   = select(df_RPP_l, ctry)
     GDP   = select(df_GDP, ctry)
     UEMP  = select(df_UEMP, ctry)
     CPI   = select(df_CPI, ctry)
@@ -139,7 +155,7 @@ for (ctry in ctry_names){
     year  = select(df_LTRate_g, Year)
     month = select(df_LTRate_g, Month)
     LTRate= select(df_LTRate_g, ctry)
-    RPP   = select(df_RPPa, ctry)
+    RPP   = select(df_RPP_g, ctry)
     GDP   = select(df_GDP_g, ctry)
     UEMP  = select(df_UEMP_g, ctry)
     CPI   = select(df_CPI_g, ctry)
