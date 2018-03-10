@@ -320,8 +320,7 @@ for (ctry in ctry_names){
   idx = which(STOCK[,1]==ctry)
   stock = as.numeric(strsplit(STOCK[idx,2]," ")[[1]])
   stock = c(100, 100+stock)
-  stock = 100*(stock/lag(stock))^(1/12)-100
-  stock = stock[2:end(stock)[1]]
+  stock = 100*(stock[2:4]/stock[1:3])^(1/12)-100
   stock = unlist(lapply(stock, function(x) rep(x,12)))
   stock = c(rep(0,4), stock)
   stock_bse = stock*0.0
