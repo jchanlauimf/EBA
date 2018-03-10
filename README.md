@@ -7,10 +7,11 @@ Repository stores data, programs, and results for bottom-up analysis of the defa
 
 Banks analyzed are headquartered in the following countries:
 
-|:-----------------:|:---------:|:-------:|:--------------:|
-| Austria (23)        | Belgium (25)   | Finland (36) | France (37)         |
-| Germany (38)        | Greece (40)    | Ireland (45) | Italy (47)          |
-| The Netherlands (64)| Portugal (70)  | Spain (89)   | United Kingdom (89) |
+ |Country (code)      |                |                |                     |
+ |:------------------:|:--------------:|:--------------:|:-------------------:|
+ |Austria (23)        | Belgium (25)   | Finland (36)   | France (37)         |         
+ |Germany (38)        | Greece (40)    | Ireland (45)   | Italy (47)          |          
+ |The Netherlands (64)| Portugal (70)  | Spain (89)     | United Kingdom (89) | 
 
 ### Analytical Engine
 
@@ -65,6 +66,3 @@ Programs should be run sequentially:
 - `prgReadPDFTable.R`
    Scrapes scenario information from PDF document, *Adverse macro-financial scenario for the 2018 EU-wide banking sector stress test*, European Systemic Risk Board (ESRB), January 16, 2018. Once it reads the data, it combines it with data from the testing scenarios to create the user-based macro scenarios and the internal macro-scenarios. The scenarios are stored in the *Testing* and *Internal Macros* directories respectively.
 
-### Results
-
-The directory stores the BuDA analysis, with each country identified by its BuDA country code.
