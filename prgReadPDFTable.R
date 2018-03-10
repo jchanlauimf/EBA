@@ -99,7 +99,7 @@ for (the_var in list_var){
 
 ## Preliminary information for data frames
 
-year = c('2017',rep('2018',4), rep('2019',4), rep('2020',4))
+year = c(2017,rep(2018,4), rep(2019,4), rep(2020,4))
 qtr  = c(4,rep(seq(1,4,1),3))
 col_names = c("year","quarter","GDP","UEMP","CPI", "LTRate",
               "EURUSD","WTI","RPP")
@@ -133,6 +133,9 @@ for (ctry in ctry_names){
   rpp_adv = as.numeric(strsplit(RPP[idx,4]," ")[[1]])
 
   # create data frame for each scenario
+  
+  # Baseline scenario
+  
   gdp = array(NA, dim=c(13,1))
   emp = array(NA, dim=c(13,1))
   cpi = array(NA, dim=c(13,1))
@@ -170,7 +173,12 @@ for (ctry in ctry_names){
   df_base = data.frame(year,qtr, gdp, emp, cpi, ltr, eur, wti, rpp)
   colnames(df_base) = col_names
   
-  assign(ctry_bse,df_base)
+  buffer_df = data.frame(rep(2017,3), seq(1,3,1), array(NA, dim=c(3,7)))
+  colnames(buffer_df) = col_names
+  
+  assign(ctry_bse,rbind(buffer_df,df_base))
+  
+  # Adverse scenario
   
   gdp = array(NA, dim=c(13,1))
   emp = array(NA, dim=c(13,1))
@@ -201,7 +209,7 @@ for (ctry in ctry_names){
   df_base = data.frame(year,qtr, gdp, emp, cpi, ltr, eur, wti, rpp)
   colnames(df_base) = col_names
   
-  assign(ctry_adv,df_base)
+  assign(ctry_adv,rbind(buffer_df,df_base))
   
 }
 
