@@ -11,7 +11,7 @@ Banks analyzed are headquartered in the following countries:
  |:------------------:|:--------------:|:--------------:|:-------------------:|
  |Austria (23)        | Belgium (25)   | Finland (36)   | France (37)         |         
  |Germany (38)        | Greece (40)    | Ireland (45)   | Italy (47)          |          
- |The Netherlands (64)| Portugal (70)  | Spain (89)     | United Kingdom (89) | 
+ |The Netherlands (64)| Portugal (70)  | Spain (79)     | United Kingdom (89) | 
 
 ### Analytical Engine
 
