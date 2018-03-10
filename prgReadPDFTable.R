@@ -292,7 +292,7 @@ other_header= c(
 
 indicator = array(c(1,1), dim=c(1,2))  # place in row 7, column 3, first Test
 
-year = c(rep('2017',4), rep('2018',12), rep('2019',12), rep('2020',12))
+year = c(rep(2017,4), rep(2018,12), rep(2019,12), rep(2020,12))
 month = c(c(9,10,11,12), rep(seq(1,12,1),3))
 
 ## Find interest rate path, common for all economies
@@ -328,9 +328,9 @@ for (ctry in ctry_names){
   stock_adv = stock
   
   df_base = data.frame(year,month,stock_bse,rate_path_bse)
-  colnames(df_base) = c("year","month","Stock Index","Interest Rate")
+  colnames(df_base) = c("year","month","Stock Index Return","Interest Rate")
   df_adv = data.frame(year,month,stock_adv,rate_path_adv)
-  colnames(df_adv) = c("year","month","Stock Index","Interest Rate")
+  colnames(df_adv) = c("year","month","Stock Index Return","Interest Rate")
   
   wb = createWorkbook(type="xlsx")
   Test1 = createSheet(wb, sheetName="BuDA Test1") 
@@ -338,13 +338,13 @@ for (ctry in ctry_names){
                row.names=FALSE, col.names=FALSE)
   addDataFrame(indicator, Test1, startRow=7, startColumn=3,
                row.names=FALSE, col.names=FALSE)
-  addDataFrame(df_base, Test1, startRow=9, startColumn=1, 
+  addDataFrame(df_base[2:dim(df_base)[1],], Test1, startRow=9, startColumn=1, 
                row.names=FALSE)
   
   Test2 = createSheet(wb, sheetName="BuDA Test2") 
   addDataFrame(other_header, Test2, startRow=1,startColumn=1,
                row.names=FALSE, col.names=FALSE)
-  addDataFrame(df_adv, Test2, startRow=6, startColumn=1, 
+  addDataFrame(df_adv[2:dim(df_base)[1],], Test2, startRow=6, startColumn=1, 
                row.names=FALSE)
   
   saveWorkbook(wb, filename)  
